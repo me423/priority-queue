@@ -35,10 +35,52 @@ class Node {
 	}
 
 	remove() {
-
+		if (!this.parent) {
+			return;
+		  }
+		this.parent.removeChild(this);
 	}
 
 	swapWithParent() {
+		if (!this.parent) {
+			return;
+		}
+	  
+		let parent = this.parent;
+		let parentsParent = parent.parent;
+		let parentsLeft = parent.left;
+		let parentsRight = parent.right;
+		let left = this.left;
+		let right = this.right;
+	  
+		if (parentsParent) {
+			parentsParent.removeChild(parent);
+		}
+	  
+		parent.removeChild(parentsLeft);
+		parent.removeChild(parentsRight);
+		this.removeChild(left);
+		this.removeChild(right);
+	  
+		if (parentsParent) {
+			parentsParent.appendChild(this);
+		}
+	  
+		if (parentsLeft == this) {
+			this.appendChild(parent);
+		} else {
+			this.appendChild(parentsLeft);
+		}
+	  
+		if (parentsRight == this) {
+			this.appendChild(parent);
+		} else {
+			this.appendChild(parentsRight);
+		}
+	  
+		parent.appendChild(left);
+		parent.appendChild(right);
+			  
 		
 	}
 }
