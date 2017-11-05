@@ -15,27 +15,83 @@ class MaxHeap {
 	}
 
 	pop() {
-		
+		if (this.isEmpty()) {
+			return;
+		}
+		this.heapSize --;
+		let detached = this.detachRoot();
+		if (this.isEmpty()) {
+			return detached.data;
+		}
+		this.restoreRootFromLastInsertedNode(detached);
+		this.shiftNodeDown(this.root);
+		return detached.data;
 	}
 
 	detachRoot() {
-		
+		let root = this.root;
+		let rootIndex = this.parentNodes.indexOf(root);
+		if (rootIndex >= 0) {
+		  this.parentNodes.splice(rootIndex, 1);
+		}
+		this.root = null;
+		return root;
 	}
 
 	restoreRootFromLastInsertedNode(detached) {
-		
+		if (typeof detached.data === 'undefined') {
+			return;
+		}
+		let lastEl = this.parentNodes.pop();
+		let lastElParent = lastEl.parent;
+	  
+		if (lastElParent.left == lastEl) {
+			lastElParent.left = null;
+		} else {
+			lastElParent.right = null;
+		}
+		this.root = lastEl;
+		this.root.parent = null;
+	  
+		if (detached.left != lastEl) {
+			lastEl.left = detached.left;
+			if (lastEl.left) {
+			  lastEl.left.parent = lastEl;
+			}
+		}
+		if (detached.right != lastEl) {
+			lastEl.right = detached.right;
+			if (lastEl.right) {
+			  lastEl.right.parent = lastEl;
+			}
+		}
+	  
+		if (lastElParent != detached) {
+			this.parentNodes.unshift(lastElParent);
+		}
+		this.parentNodes.unshift(lastEl);
+	  
+		 if (this.root.left && this.root.right) {
+			this.parentNodes.shift();
+		}
 	}
 
 	size() {
-		
+		if (this.isEmpty()) {
+			return 0;
+		} else {
+			return this.heapSize;
+		}
 	}
 
 	isEmpty() {
-		
+		return this.parentNodes.length == 0;
 	}
 
 	clear() {
-		
+		this.root = null;
+		this.parentNodes = [];
+		this.heapSize = 0;
 	}
 
 	insertNode(node) {
